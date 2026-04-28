@@ -23,18 +23,21 @@ class _HomeScreenState extends State<HomeScreen>{
   @override
   void initState() {
     super.initState();
-    drinks = RepositoryDrinks().drinks; // valor inicial
+    drinks = RepositoryDrinks.drinks; // valor inicial
   }
 
   void searchDrinks( String busqueda) {
     setState(() {
-      String busquedaLowerCase = busqueda.toLowerCase();
-      List<Drink> drinksBuff = RepositoryDrinks().drinks;
-      drinks = drinksBuff.where((ret) => ret.name.toLowerCase().contains(busquedaLowerCase)).toList();
-    }
-  );
+      drinks = RepositoryDrinks().searchByName(busqueda); 
+      }
+    );
   }
 
+  void updateDrinks( List<Drink> drinksList){
+    setState(() {
+      drinks = drinksList; 
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,17 +45,17 @@ class _HomeScreenState extends State<HomeScreen>{
 
     return Scaffold(
       appBar: AppBar(title: const Text('FuckinDrinks!!')),
-      body: _DrinkList(drinks: drinks),
-      floatingActionButton: SearchBarManager(onSearch: (busqueda) => searchDrinks(busqueda) ,),
+      body: _DrinkList(drinks: drinks,onUpdate: (drinksList) => updateDrinks(drinksList) ),
+      floatingActionButton: SearchBarManager(onUpdate: (drinksList) => updateDrinks(drinksList) ,),
       );
   }
 }
 
 class SearchBarManager extends StatefulWidget {
     
-  final Function(String) onSearch;
+  final Function(List<Drink>) onUpdate;
 
-  const SearchBarManager({super.key,required this.onSearch});
+  const SearchBarManager({super.key,required this.onUpdate});
 
   @override
   State<SearchBarManager> createState() => _SearchBarManager();
@@ -86,7 +89,8 @@ class _SearchBarManager extends State<SearchBarManager>{
 
   void submitedSearchBar(String busqueda){
     hideSearchBar();
-    widget.onSearch(busqueda);
+    List<Drink> buff = RepositoryDrinks().searchByName(busqueda);
+    widget.onUpdate(buff);
 
   }
 
@@ -136,26 +140,31 @@ class _SearchBarManager extends State<SearchBarManager>{
 }
 
 
-
 class _DrinkList extends StatelessWidget {
   final List<Drink> drinks;
-  
-  const _DrinkList({super.key, required this.drinks});
+  final Function(List <Drink>) onUpdate;
 
+  const _DrinkList({super.key, required this.drinks,required this.onUpdate});
+
+  void pressOnCard(String id){  
+    RepositoryDrinks().deleteDrink(id);
+    onUpdate(RepositoryDrinks.drinks);
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: drinks.length,
-      itemBuilder: (context, index) => _ItemDrink(drink: drinks[index]),
+      itemBuilder: (context, index) => _ItemDrink(drink: drinks[index],longPressAction: pressOnCard,),
     );
   }
 }
 
 class _ItemDrink extends StatelessWidget {
   final Drink drink;
+  final Function(String) longPressAction;
 
-  const _ItemDrink({super.key, required this.drink});
+  const _ItemDrink({super.key, required this.drink,required this.longPressAction});
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +187,28 @@ class _ItemDrink extends StatelessWidget {
         ),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () => context.push('/detail', extra: drink),
+        onLongPress: (){
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title : Text('Delete Item'),
+              content: Text('Are you sure you want to delete this item?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                    longPressAction(drink.id);
+                  },
+                  child: Text('Delete'),
+                ),
+              ] 
+            ),
+          );
+        },
       ),
     );
   }

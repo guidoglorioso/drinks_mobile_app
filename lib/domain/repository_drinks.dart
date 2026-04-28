@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:login_app/domain/drink.dart';
 
-class RepositoryDrinks {
-  List<Drink> drinks = [
+class RepositoryDrinks{
+  static List<Drink> drinks = [
     Drink(
       id: '1',
       name: 'Alexander',
@@ -666,6 +667,17 @@ class RepositoryDrinks {
           '45 ml Jamaican dark rum, 45 ml Gold Puerto Rican rum, 30 ml Demerara Rum, 20 ml Fresh lime juice, 15 ml Falernum, 15 ml Donn\'s Mix, 1 tsp Grenadine syrup, 1 dash Angostura bitters, 6 drops Pernod',
     ),
   ];
+
+  void deleteDrink(String id){
+    drinks.removeWhere((item) => item.id == id );
+  }
+
+  List<Drink> searchByName(String name){
+      String nameLowerCase = name.toLowerCase();
+      List<Drink> drinksBuff = drinks;
+      return drinksBuff.where((ret) => ret.name.toLowerCase().contains(nameLowerCase)).toList();
+    
+  }
 
   RepositoryDrinks();
 }
