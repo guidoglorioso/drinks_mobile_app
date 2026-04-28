@@ -1,3 +1,3 @@
-# login_app
+# drinks-mobile-app
 
-A new Flutter project.
+Proyecto creado durante la cursada de aplicaciones moviles basado en Flutter.

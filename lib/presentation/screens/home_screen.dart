@@ -3,24 +3,50 @@ import 'package:go_router/go_router.dart';
 import 'package:login_app/domain/drink.dart';
 import 'package:login_app/domain/repository_drinks.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final String userEmail;
 
   const HomeScreen({super.key, required this.userEmail});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+
+}
+
+class _HomeScreenState extends State<HomeScreen>{
+
+  late List<Drink> drinks;
+
+  @override
+  void initState() {
+    super.initState();
+    drinks = RepositoryDrinks().drinks; // valor inicial
+  }
+
+  void actualizarLista( List<Drink> newDrinks) {
+    setState(() {
+      drinks = newDrinks;
+    }
+  );
+  }
 
   @override
   Widget build(BuildContext context) {
     //final textStyle = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(title: const Text('FuckinDrinks!!')),
-      body: _DrinksList(drinks: RepositoryDrinks().drinks),
-    );
+      body: _DrinkList(drinks: drinks),
+      
+      );
   }
 }
 
-class _DrinksList extends StatelessWidget {
+
+class _DrinkList extends StatelessWidget {
   final List<Drink> drinks;
-  const _DrinksList({super.key, required this.drinks});
+  
+  const _DrinkList({super.key, required this.drinks});
+
 
   @override
   Widget build(BuildContext context) {
