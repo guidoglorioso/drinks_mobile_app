@@ -44,7 +44,22 @@ class _HomeScreenState extends State<HomeScreen>{
     //final textStyle = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('FuckinDrinks!!')),
+      appBar: AppBar(
+        title: const Text('FuckinDrinks!!'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 25.0),
+            child: IconButton(
+            onPressed: () => context.push('/config'), 
+            icon: Icon(Icons.settings),
+            iconSize: 35,
+            highlightColor: Colors.grey[300],
+            ),
+          ),
+        ],
+      
+        ),
+
       body: _DrinkList(drinks: drinks,onUpdate: (drinksList) => updateDrinks(drinksList) ),
       floatingActionButton: SearchBarManager(onUpdate: (drinksList) => updateDrinks(drinksList) ,),
       );
