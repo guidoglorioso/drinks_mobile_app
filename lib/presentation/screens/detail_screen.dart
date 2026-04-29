@@ -30,7 +30,19 @@ class DetailScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(40),
               child: drink.imageUrl.isEmpty
                   ? Container(width: 300, height: 500, color: Colors.white)
-                  : Image.network(drink.imageUrl, height: 500),
+                  : Image.network(
+                    drink.imageUrl, 
+                    height: 500,
+                    loadingBuilder: (context, child, loadingProgress){
+                      if(loadingProgress == null){
+                        return child;
+                      }
+                      return SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator());
+                      },
+                    ),
             ),
             SizedBox(height: 30),
 

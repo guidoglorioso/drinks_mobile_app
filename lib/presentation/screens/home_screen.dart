@@ -183,6 +183,15 @@ class _ItemDrink extends StatelessWidget {
                   height: 60,
                   width: 40,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress){
+                    if(loadingProgress == null){
+                      return child;
+                    }
+                    return SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator());
+                  },
                 ),
         ),
         trailing: Icon(Icons.arrow_forward_ios),
