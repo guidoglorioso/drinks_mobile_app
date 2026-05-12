@@ -22,8 +22,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>{
   Widget build(BuildContext context) {
 
     //final textStyle = Theme.of(context).textTheme;
-    final drinks_repo = ref.watch(appDrinksProvider);
-    final drinks = drinks_repo.drinks;
+    final drinks = ref.watch(appDrinksProvider).drinks;
+    
 
     return Scaffold(
       appBar: AppBar(
@@ -138,7 +138,7 @@ class _SearchBarManager extends ConsumerState<SearchBarManager>{
 class _DrinkList extends StatelessWidget {
   final List<Drink> drinks;
 
-  const _DrinkList({super.key, required this.drinks});
+  const _DrinkList({required this.drinks});
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +152,7 @@ class _DrinkList extends StatelessWidget {
 class _ItemDrink extends ConsumerWidget {
   final Drink drink;
 
-  const _ItemDrink({super.key, required this.drink});
+  const _ItemDrink({required this.drink});
 
   @override
   Widget build(BuildContext context,ref) {

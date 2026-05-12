@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:login_app/domain/users.dart';
 import 'package:login_app/presentation/providers/color_theme_provider.dart';
 import 'package:login_app/domain/app_theme.dart';
 
@@ -24,15 +22,14 @@ class ThemeScreen extends ConsumerWidget {
           ), 
         ],
       ),
-      body: _bodyThemeScreen(),
+      body: BodyThemeScreen(),
     );
   }
 }
 
-class _bodyThemeScreen extends StatelessWidget {
-  const _bodyThemeScreen({
-    super.key,
-  });
+class BodyThemeScreen extends StatelessWidget {
+  
+  const BodyThemeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

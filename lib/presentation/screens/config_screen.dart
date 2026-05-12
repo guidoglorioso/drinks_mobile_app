@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:login_app/domain/users.dart';
 
 
 class ConfigScreen extends StatefulWidget {

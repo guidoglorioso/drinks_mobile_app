@@ -44,7 +44,7 @@ class DetailScreen extends StatelessWidget {
 
 class _InformationDrink extends StatelessWidget {
   final Drink drink;
-  const _InformationDrink({super.key, required this.drink});
+  const _InformationDrink({ required this.drink});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,6 @@ class _InformationDrink extends StatelessWidget {
 
 class _ItemInformationDrink extends StatelessWidget {
   const _ItemInformationDrink({
-    super.key,
     required this.title,
     required this.description,
   });

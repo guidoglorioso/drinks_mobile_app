@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:login_app/domain/users.dart';
+import 'package:login_app/presentation/providers/users_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
 
-  final Users userManagement;
-  const LoginScreen({super.key, required this.userManagement});
+
+  const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(BuildContext context,ref) {
+    final userManagement = ref.watch(appUserProvider);
+    
     final textStyle = Theme.of(context).textTheme;
 
     final TextEditingController emailController = TextEditingController();
