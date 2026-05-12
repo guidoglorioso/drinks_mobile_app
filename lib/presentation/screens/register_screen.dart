@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:login_app/domain/users.dart';
-class RegisterScreen extends StatelessWidget {
+import 'package:login_app/presentation/providers/users_provider.dart';
 
-  final Users users;
-  
-  const RegisterScreen({super.key,required this.users});
+
+class RegisterScreen extends ConsumerWidget {
+
+  const RegisterScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,ref) {
+
     final textStyle = Theme.of(context).textTheme;
     final TextEditingController emailController = TextEditingController();
     final TextEditingController pswController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -56,6 +59,7 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             SizedBox(height: 40),
 
             SizedBox(
@@ -70,7 +74,7 @@ class RegisterScreen extends StatelessWidget {
                     return;
                   }
                   try {
-                    users.insertUser(emailController.text, pswController.text);
+                    ref.read(appUserProvider.notifier).addUser(emailController.text, pswController.text);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Please, login with your new account')),
                     );

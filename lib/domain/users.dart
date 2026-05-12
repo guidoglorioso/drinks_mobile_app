@@ -1,13 +1,14 @@
+
+  final List bdUsers = [{
+      'email': "guido",
+      'password': "Guido123"
+      }];
+
 class Users {
 
-  final List _users = [];
+  final List users;
 
-  Users(){
-      _users.add({
-      'email': "guido",
-      'password': "Guido_123"
-      });
-  }
+  Users({required this.users});
 
   void insertUser(String email, String password) {
     
@@ -18,7 +19,7 @@ class Users {
       throw Exception('Email already exists');
     }
 
-    _users.add({
+    users.add({
       'email': email,
       'password': password
     });
@@ -26,7 +27,7 @@ class Users {
   }
 
   bool checkUser(String email, String password) {
-    for (var user in _users) {
+    for (var user in users) {
       if (user['email'] == email && user['password'] == password) {
         return true;
       }
@@ -46,12 +47,20 @@ class Users {
   }
 
   bool _verifyEmail(String email) {
-    for (var user in _users) {
+    for (var user in users) {
       if (user['email'] == email) {
         return true;
       }
     }
     return false;
+  }
+
+  Users copyWith({
+    List ? users
+  }){
+    return Users(
+      users: users ?? this.users,
+      );
   }
 
 }

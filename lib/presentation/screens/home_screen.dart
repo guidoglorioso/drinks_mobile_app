@@ -1,68 +1,64 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:login_app/domain/drink.dart';
-import 'package:login_app/domain/repository_drinks.dart';
+import 'package:login_app/presentation/providers/drinks_provider.dart';
 
 // widget principal
-class HomeScreen extends StatefulWidget {
-  final String userEmail;
+class HomeScreen extends ConsumerStatefulWidget {
 
-  const HomeScreen({super.key, required this.userEmail});
+  const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 
 }
 
-class _HomeScreenState extends State<HomeScreen>{
-
-  late List<Drink> drinks;
-
-  @override
-  void initState() {
-    super.initState();
-    drinks = RepositoryDrinks.drinks; // valor inicial
-  }
-
-  void searchDrinks( String busqueda) {
-    setState(() {
-      drinks = RepositoryDrinks().searchByName(busqueda); 
-      }
-    );
-  }
-
-  void updateDrinks( List<Drink> drinksList){
-    setState(() {
-      drinks = drinksList; 
-    });
-  }
+class _HomeScreenState extends ConsumerState<HomeScreen>{
 
   @override
   Widget build(BuildContext context) {
+
     //final textStyle = Theme.of(context).textTheme;
+    final drinks = ref.watch(appDrinksProvider).drinks;
+    
 
     return Scaffold(
-      appBar: AppBar(title: const Text('FuckinDrinks!!')),
-      body: _DrinkList(drinks: drinks,onUpdate: (drinksList) => updateDrinks(drinksList) ),
-      floatingActionButton: SearchBarManager(onUpdate: (drinksList) => updateDrinks(drinksList) ,),
+      appBar: AppBar(
+        title: const Text('FuckinDrinks!!'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 25.0),
+            child: IconButton(
+            onPressed: () => context.push('/config'), 
+            icon: Icon(Icons.settings),
+            iconSize: 35,
+            highlightColor: Colors.grey[300],
+            ),
+          ),
+        ],
+      
+        ),
+
+      body: _DrinkList(drinks: drinks ),
+      floatingActionButton: SearchBarManager(),
       );
   }
 }
 
-class SearchBarManager extends StatefulWidget {
-    
-  final Function(List<Drink>) onUpdate;
+class SearchBarManager extends ConsumerStatefulWidget {
 
-  const SearchBarManager({super.key,required this.onUpdate});
+
+  const SearchBarManager({super.key});
 
   @override
-  State<SearchBarManager> createState() => _SearchBarManager();
+  ConsumerState<SearchBarManager> createState() => _SearchBarManager();
 
 }
 
-class _SearchBarManager extends State<SearchBarManager>{
+class _SearchBarManager extends ConsumerState<SearchBarManager>{
   OverlayEntry? _overlayEntry;
   final FocusNode _searchFocusNode = FocusNode();
 
@@ -85,13 +81,6 @@ class _SearchBarManager extends State<SearchBarManager>{
       _overlayEntry = null;
     }
     
-  }
-
-  void submitedSearchBar(String busqueda){
-    hideSearchBar();
-    List<Drink> buff = RepositoryDrinks().searchByName(busqueda);
-    widget.onUpdate(buff);
-
   }
 
   @override
@@ -128,7 +117,13 @@ class _SearchBarManager extends State<SearchBarManager>{
             child: SearchBar(
               focusNode: _searchFocusNode,
               hintText: "Busqueda", 
-              onSubmitted: (value) => submitedSearchBar(value),
+              onSubmitted: (value){
+                hideSearchBar();
+                value == '' ? 
+                    ref.read(appDrinksProvider.notifier).getAllDrinks() : 
+                    ref.read(appDrinksProvider.notifier).filterByName(value);
+               
+              },
             ),
           ),
         ),
@@ -142,32 +137,25 @@ class _SearchBarManager extends State<SearchBarManager>{
 
 class _DrinkList extends StatelessWidget {
   final List<Drink> drinks;
-  final Function(List <Drink>) onUpdate;
 
-  const _DrinkList({super.key, required this.drinks,required this.onUpdate});
-
-  void pressOnCard(String id){  
-    RepositoryDrinks().deleteDrink(id);
-    onUpdate(RepositoryDrinks.drinks);
-  }
+  const _DrinkList({required this.drinks});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: drinks.length,
-      itemBuilder: (context, index) => _ItemDrink(drink: drinks[index],longPressAction: pressOnCard,),
+      itemBuilder: (context, index) => _ItemDrink(drink: drinks[index]),
     );
   }
 }
 
-class _ItemDrink extends StatelessWidget {
+class _ItemDrink extends ConsumerWidget {
   final Drink drink;
-  final Function(String) longPressAction;
 
-  const _ItemDrink({super.key, required this.drink,required this.longPressAction});
+  const _ItemDrink({required this.drink});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,ref) {
     var textStyle = Theme.of(context).textTheme;
 
     return Card(
@@ -210,7 +198,7 @@ class _ItemDrink extends StatelessWidget {
                 FilledButton(
                   onPressed: (){
                     Navigator.pop(context);
-                    longPressAction(drink.id);
+                    ref.read(appDrinksProvider.notifier).removeDrinkNotifier( drink.id );
                   },
                   child: Text('Delete'),
                 ),
