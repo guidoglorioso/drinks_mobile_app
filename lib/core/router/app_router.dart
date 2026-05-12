@@ -16,7 +16,7 @@ final appRouter = GoRouter(
   routes: [
       GoRoute(path: '/login',     builder: (context, state) => LoginScreen(userManagement: users),),    
       GoRoute(path: '/register',  builder: (context, state) => RegisterScreen(users : state.extra as Users),),
-      GoRoute(path: '/home',      builder: (context, state) => HomeScreen(userEmail : state.extra as String),),
+      GoRoute(path: '/home',      builder: (context, state) => HomeScreen(),),
       GoRoute(path: '/detail',    builder: (context, state) => DetailScreen(drink: state.extra as Drink),),
       GoRoute(path: '/config',    builder: (context, state) => ConfigScreen(),),
       GoRoute(path: '/config2',    builder: (context, state) => ConfigScreen2(),),

@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
+
 import 'package:login_app/domain/drink.dart';
 
-class RepositoryDrinks{
-  static List<Drink> drinks = [
+final List<Drink> bdDrinks = [
     Drink(
       id: '1',
       name: 'Alexander',
@@ -668,9 +667,49 @@ class RepositoryDrinks{
     ),
   ];
 
+
+class RepositoryDrinks{
+  List<Drink> drinks;
+  
+  RepositoryDrinks({required this.drinks});
+
   void deleteDrink(String id){
     drinks.removeWhere((item) => item.id == id );
   }
+  List<Drink> getList(){
+    return drinks;
+  }
+  String getNextId(List<Drink> drinks) {
+    
+    if (drinks.isEmpty) return "1";
+
+    // 1. Extraemos los IDs y los convertimos a int.
+    // Usamos tryParse por seguridad en caso de que algún ID no sea numérico.
+    final ids = drinks.map((drink) => int.tryParse(drink.id) ?? 0);
+
+    // 2. Buscamos el valor máximo en la lista.
+    final maxId = ids.reduce((value, element) => value > element ? value : element);
+
+    // 3. Devolvemos el máximo + 1 convertido a String.
+    return (maxId + 1).toString();
+  }
+  
+  void addDrink({required String name, String? method, String? imageUrl, String? garnish, String? ingredients}){
+    
+    String id = getNextId(drinks);
+    Drink buff = Drink(
+      id : id, 
+      name : name, 
+      method : method ?? '',
+      imageUrl : imageUrl  ?? '', 
+      garnish:garnish  ?? '',
+      ingredients:ingredients ?? ''
+      );
+
+    drinks.add(buff);
+    
+  }
+
 
   List<Drink> searchByName(String name){
       String nameLowerCase = name.toLowerCase();
@@ -679,5 +718,13 @@ class RepositoryDrinks{
     
   }
 
-  RepositoryDrinks();
+  RepositoryDrinks copyWith({
+      List<Drink>? drinks
+    }){
+      return RepositoryDrinks(
+        drinks: drinks ?? this.drinks,
+        );
+    }
+
+
 }
