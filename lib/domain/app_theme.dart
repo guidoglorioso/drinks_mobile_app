@@ -20,10 +20,11 @@ class AppTheme {
     this.isDark = false,
     });
 
-  ThemeData getThemeData(){
+  ThemeData getThemeData(bool isDark,int color){
     return ThemeData(
       brightness: isDark ? Brightness.dark : Brightness.light,
-      colorSchemeSeed: colors[color],);
+      colorSchemeSeed: colors[color],
+      );
   }
   
   AppTheme copyWith({

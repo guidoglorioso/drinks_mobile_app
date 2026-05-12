@@ -39,7 +39,7 @@ class _bodyThemeScreen extends StatelessWidget {
     return Scaffold(
       body: ListView.builder(
         itemCount: colors.length,
-        itemBuilder: (context, index) => ItemThemeScreen(color: colors[index],name: ("Color N°  " + index.toString()),index : index ),
+        itemBuilder: (context, index) => ItemThemeScreen(name: ("Color N°  " + index.toString()),color : index ),
       ) 
     );
   }
@@ -47,26 +47,25 @@ class _bodyThemeScreen extends StatelessWidget {
 
 class ItemThemeScreen extends ConsumerWidget {
 
-  final MaterialColor color;
+  final int color;
   final String name;
-  final int index;
   const ItemThemeScreen({
     super.key,
-    required this.color,
     required this.name,
-    required this.index,
+    required this.color,
   });
 
   @override
-  Widget build(BuildContext context,ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: color, // El color que elijas
+          backgroundColor: colors[color], // El color que elijas
           radius: 12, // Opcional: ajusta el tamaño
         ),
         title: Text(name),
-        onTap: () => ref.read(appThemeProvider).copyWith(color: index),
+        onTap: () => ref.read(appThemeProvider.notifier).setThemeColor(color),
       ),
     );
   }

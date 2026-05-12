@@ -44,7 +44,7 @@ class _MenuItemsState extends State<MenuItems> {
       children: [
 
         Card(
-          color: Colors.grey[50],
+
           margin: EdgeInsets.symmetric(horizontal: 20),
           child: SwitchListTile(
             title: Text('Opcion 1'),
@@ -58,7 +58,7 @@ class _MenuItemsState extends State<MenuItems> {
         SizedBox(height: 10,),
 
         Card(
-          color: Colors.grey[50],
+
           margin: EdgeInsets.symmetric(horizontal: 20),
       
           child: ExpansionTile(
@@ -100,7 +100,7 @@ class _MenuItemsState extends State<MenuItems> {
         ),
         SizedBox(height: 10,),
         Card(
-          color: Colors.grey[50],
+
           margin: EdgeInsets.symmetric(horizontal: 20), 
           child: CheckboxListTile(
             title: Text("Habilitar modo alcoholico"),
@@ -120,7 +120,7 @@ class _MenuItemsState extends State<MenuItems> {
           ),   // Espacio vacío al final (derecha) ),
         SizedBox(height: 20),
         Card(
-          color: Colors.grey[50],
+
           margin: EdgeInsets.symmetric(horizontal: 20), 
           child: ListTile(
             title: Text('Paleta de colores'),
