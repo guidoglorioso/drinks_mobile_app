@@ -7,6 +7,7 @@ import 'package:login_app/domain/drink.dart';
 import 'package:login_app/presentation/screens/detail_screen.dart';
 import 'package:login_app/presentation/screens/config_screen.dart';
 import 'package:login_app/presentation/screens/config_screen2.dart';
+import 'package:login_app/presentation/screens/color_palette.dart';
 final users = Users();
 
 final appRouter = GoRouter(
@@ -19,6 +20,6 @@ final appRouter = GoRouter(
       GoRoute(path: '/detail',    builder: (context, state) => DetailScreen(drink: state.extra as Drink),),
       GoRoute(path: '/config',    builder: (context, state) => ConfigScreen(),),
       GoRoute(path: '/config2',    builder: (context, state) => ConfigScreen2(),),
-  
+      GoRoute(path: '/color-palette',    builder: (context, state) => ThemeScreen(),),
   ],
 );
