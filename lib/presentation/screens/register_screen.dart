@@ -1,15 +1,14 @@
+import 'package:drinks_mobile_app/presentation/providers/users_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:login_app/presentation/providers/users_provider.dart';
-
 
 class RegisterScreen extends ConsumerWidget {
-
   const RegisterScreen({super.key});
 
   @override
-  Widget build(BuildContext context,ref) {
+  Widget build(BuildContext context, ref) {
+    final userNotifier = ref.read(appUserProvider.notifier);
 
     final textStyle = Theme.of(context).textTheme;
     final TextEditingController emailController = TextEditingController();
@@ -24,7 +23,7 @@ class RegisterScreen extends ConsumerWidget {
             SizedBox(
               height: 60,
               child: Text('Register Account', style: textStyle.displayMedium),
-              ),
+            ),
             SizedBox(height: 250),
             Text('Email', style: textStyle.bodyMedium),
             SizedBox(height: 20),
@@ -66,26 +65,34 @@ class RegisterScreen extends ConsumerWidget {
               width: 300,
               height: 40,
               child: ElevatedButton(
-                onPressed: () {
-                  if(emailController.text.isEmpty || pswController.text.isEmpty){
+                onPressed: () async {
+                  if (emailController.text.isEmpty ||
+                      pswController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please, fill all the fields')),
+                      SnackBar(content: Text('Please, fill all the fields')),
                     );
                     return;
                   }
                   try {
-                    ref.read(appUserProvider.notifier).addUser(emailController.text, pswController.text);
+                    await userNotifier.registerUser(
+                      emailController.text,
+                      pswController.text,
+                    );
+
+                    if (!context.mounted) return;
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please, login with your new account')),
+                      SnackBar(
+                        content: Text('Please, login with your new account'),
+                      ),
                     );
                     context.pop();
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString())),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
                     return;
                   }
-                  
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,

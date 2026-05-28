@@ -1,5 +1,5 @@
+import 'package:drinks_mobile_app/domain/repository_drinks.dart';
 import 'package:flutter/material.dart';
-import 'package:login_app/domain/drink.dart';
 
 class DetailScreen extends StatelessWidget {
   final Drink drink;
@@ -31,16 +31,17 @@ class DetailScreen extends StatelessWidget {
               child: drink.imageUrl.isEmpty
                   ? Container(width: 300, height: 500, color: Colors.white)
                   : Image.network(
-                    drink.imageUrl, 
-                    height: 500,
-                    loadingBuilder: (context, child, loadingProgress){
-                      if(loadingProgress == null){
-                        return child;
-                      }
-                      return SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: CircularProgressIndicator());
+                      drink.imageUrl,
+                      height: 500,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: CircularProgressIndicator(),
+                        );
                       },
                     ),
             ),
@@ -56,7 +57,7 @@ class DetailScreen extends StatelessWidget {
 
 class _InformationDrink extends StatelessWidget {
   final Drink drink;
-  const _InformationDrink({ required this.drink});
+  const _InformationDrink({required this.drink});
 
   @override
   Widget build(BuildContext context) {
@@ -97,10 +98,7 @@ class _InformationDrink extends StatelessWidget {
 }
 
 class _ItemInformationDrink extends StatelessWidget {
-  const _ItemInformationDrink({
-    required this.title,
-    required this.description,
-  });
+  const _ItemInformationDrink({required this.title, required this.description});
 
   final String title;
 
