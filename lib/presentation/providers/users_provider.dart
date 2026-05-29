@@ -2,108 +2,131 @@ import 'package:drinks_mobile_app/domain/repository_users.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final appUserProvider = StateNotifierProvider<AppUserNotifier, Users>((ref) {
-  return AppUserNotifier();
-});
+final appUserProvider =
+    StateNotifierProvider<AppUserNotifier, Map<String, dynamic>?>((ref) {
+      return AppUserNotifier();
+    });
 
-class AppUserNotifier extends StateNotifier<Users> {
-  AppUserNotifier() : super(Users());
+class AppUserNotifier extends StateNotifier<Map<String, dynamic>?> {
+  AppUserNotifier() : super(null);
 
-  Map<String, dynamic>? userData;
-  SharedPreferences? prefs;
+  SharedPreferences? _prefs;
+  final _usersRepository = Users();
 
   Future<void> loginUser(String email, String psw) async {
     try {
-      final user = await state.checkUser(email, psw);
-
-      userData = user;
+      final user = await _usersRepository.checkUser(email, psw);
+      state = user;
+      await _saveUserData();
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  bool logoutUser() {
-    userData = null;
-    return true;
+  Future<void> logoutUser() async {
+    state = null;
+    await _removeUserData();
   }
 
   Future<void> registerUser(String email, String psw) async {
     try {
-      await state.insertUser(email, psw);
+      await _usersRepository.insertUser(email, psw);
     } catch (e) {
       throw Exception(e);
     }
   }
 
-  String getUserUrlPicture() => userData?['pictureUrl'] ?? '';
-  String getUsername() => userData?['userName'] ?? 'Invitado';
-  String getEmail() => userData?['email'] ?? '';
+  String getUserUrlPicture() => state?['pictureUrl'] ?? '';
+  String getUsername() => state?['userName'] ?? '';
+  String getEmail() => state?['email'] ?? '';
 
   Future<bool> editUsername(String newUsername) async {
-    if (userData == null) return false;
+    if (state == null) return false;
+
     // ojo aca que no se valida cambios en la base de datos en forma externa.
-    bool success = await state.db.editUser(
-      userData!['idUser'],
+    bool success = await _usersRepository.db.editUser(
+      state!['idUser'],
       newUsername,
-      userData!['email'],
-      userData!['psw'],
-      userData!['pictureUrl'],
+      state!['email'],
+      state!['psw'],
+      state!['pictureUrl'],
     );
 
-    if (success) userData!['userName'] = newUsername;
+    if (success) {
+      state = {...state!, 'userName': newUsername};
+      await _saveUserData();
+    }
     return success;
   }
 
   Future<bool> editUrlPicture(String newUrl) async {
-    if (userData == null) return false;
+    if (state == null) return false;
+
     //Idem editUsername
-    bool success = await state.db.editUser(
-      userData!['idUser'],
-      userData!['userName'],
-      userData!['email'],
-      userData!['psw'],
+    bool success = await _usersRepository.db.editUser(
+      state!['idUser'],
+      state!['userName'],
+      state!['email'],
+      state!['psw'],
       newUrl,
     );
 
-    if (success) userData!['pictureUrl'] = newUrl;
+    if (success) {
+      state = {...state!, 'newUrl': newUrl};
+      await _saveUserData();
+    }
     return success;
   }
 
   Future<bool> _saveUserData() async {
-    if (prefs == null) return false;
+    if (_prefs == null) return false;
+    _prefs = await SharedPreferences.getInstance();
 
-    await prefs!.setString('idUser', userData!['idUser']);
-    await prefs!.setString('userName', userData!['userName']);
-    await prefs!.setString('email', userData!['email']);
-    await prefs!.setString('psw', userData!['psw']);
-    await prefs!.setString('pictureUrl', userData!['pictureUrl']);
+    await _prefs!.setInt('idUser', state!['idUser']);
+    await _prefs!.setString('userName', state!['userName']);
+    await _prefs!.setString('email', state!['email']);
+    await _prefs!.setString('psw', state!['psw']);
+    await _prefs!.setString('pictureUrl', state!['pictureUrl']);
 
-    return true;
-  }
-
-  bool _loadUserData() {
-    if (prefs == null) return false;
-
-    userData!['idUser'] = prefs!.getString('idUser');
-    userData!['userName'] = prefs!.getString('userName');
-    userData!['email'] = prefs!.getString('email');
-    userData!['psw'] = prefs!.getString('psw');
+    await _prefs!.setBool('isLoggedIn', true);
 
     return true;
   }
 
   Future<bool> _removeUserData() async {
-    if (prefs == null) return false;
+    if (_prefs == null) return false;
 
-    await prefs!.remove('idUser');
-    await prefs!.remove('userName');
-    await prefs!.remove('email');
-    await prefs!.remove('psw');
-    await prefs!.remove('pictureUrl');
+    await _prefs!.remove('idUser');
+    await _prefs!.remove('userName');
+    await _prefs!.remove('email');
+    await _prefs!.remove('psw');
+    await _prefs!.remove('pictureUrl');
+    await _prefs!.setBool('isLoggedIn', false);
+
     return true;
   }
 
-  Future<void> getPrefs() async {
-    prefs = await SharedPreferences.getInstance();
+  Future<bool> loadPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    final bool isLoggedIn = _prefs?.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      _loadUserData();
+    }
+    return isLoggedIn;
+  }
+
+  bool _loadUserData() {
+    if (_prefs == null) return false;
+
+    state = {
+      'idUser': _prefs!.getInt('idUser'),
+      'userName': _prefs!.getString('userName'),
+      'email': _prefs!.getString('email'),
+      'psw': _prefs!.getString('psw'),
+      'pictureUrl': _prefs!.getString('pictureUrl'),
+    };
+
+    return true;
   }
 }

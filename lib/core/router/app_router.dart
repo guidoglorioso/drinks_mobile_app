@@ -6,12 +6,14 @@ import 'package:drinks_mobile_app/presentation/screens/detail_screen.dart';
 import 'package:drinks_mobile_app/presentation/screens/home_screen.dart';
 import 'package:drinks_mobile_app/presentation/screens/login_screen.dart';
 import 'package:drinks_mobile_app/presentation/screens/register_screen.dart';
+import 'package:drinks_mobile_app/presentation/screens/start_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/',
 
   routes: [
+    GoRoute(path: '/', builder: (context, state) => StartScreen()),
     GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
     GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
     GoRoute(path: '/home', builder: (context, state) => HomeScreen()),

@@ -96,7 +96,9 @@ class DbHelperUsers {
     );
 
     if (resultado.isNotEmpty) {
-      return resultado.first; // Retorna el mapa del usuario encontrado
+      return Map<String, dynamic>.from(
+        resultado.first,
+      ); // Retorna el mapa del usuario encontrado
     }
 
     return null;

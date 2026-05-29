@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
 class ConfigScreen extends StatefulWidget {
   const ConfigScreen({super.key});
 
@@ -9,18 +8,18 @@ class ConfigScreen extends StatefulWidget {
   State<ConfigScreen> createState() => _ConfigScreenState();
 }
 
-
 class _ConfigScreenState extends State<ConfigScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( 
+      appBar: AppBar(
         title: Text('Configuration'),
-        actions:[
+        actions: [
           IconButton(
-            onPressed: () => context.push('/config2'), 
-            icon: Icon(Icons.arrow_circle_right))
-        ] ,
+            onPressed: () => context.push('/config2'),
+            icon: Icon(Icons.arrow_circle_right),
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: configMenu.length,
@@ -31,13 +30,9 @@ class _ConfigScreenState extends State<ConfigScreen> {
 }
 
 class Item extends StatelessWidget {
-  
   final MenuItem itemRecived;
-  
-  const Item({
-    super.key,
-    required this.itemRecived,
-  });
+
+  const Item({super.key, required this.itemRecived});
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +42,13 @@ class Item extends StatelessWidget {
       leading: Icon(itemRecived.icon),
       onTap: () => showAboutDialog(
         context: context,
-        children: [
-          Text(('Prueba  ') + itemRecived.subtitle ),
-        ]
-        ),
+        children: [Text(('Prueba  ') + itemRecived.subtitle)],
+      ),
     );
   }
 }
 
-
-class MenuItem{
+class MenuItem {
   String title;
   String subtitle;
   IconData icon;
@@ -66,34 +58,33 @@ class MenuItem{
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.path
-  }); 
+    required this.path,
+  });
 }
 
-final List <MenuItem> configMenu = [
-  MenuItem (
+final List<MenuItem> configMenu = [
+  MenuItem(
     title: 'Config1',
     subtitle: 'Subtitle1',
     icon: Icons.search,
     path: '',
   ),
-  MenuItem (
+  MenuItem(
     title: 'Config2',
     subtitle: 'Subtitle2',
     icon: Icons.access_alarms,
     path: '',
   ),
-  MenuItem (
+  MenuItem(
     title: 'Config3',
     subtitle: 'Subtitle3',
     icon: Icons.accessible_forward_outlined,
     path: '',
   ),
-  MenuItem (
+  MenuItem(
     title: 'Config4',
     subtitle: 'Subtitle4',
     icon: Icons.account_balance_wallet_outlined,
     path: '',
   ),
-
 ];
